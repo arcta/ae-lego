@@ -1,0 +1,55 @@
+<svg width="900" height="220" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="encoder" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0%" stop-color="#abc"/>
+    <stop offset="100%" stop-color="#88f"/>
+  </linearGradient>
+  <linearGradient id="decoder" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0%" stop-color="#88f"/>
+    <stop offset="100%" stop-color="#abc"/>
+  </linearGradient>
+  <linearGradient id="rainbow" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="5%" stop-color="red"/>
+    <stop offset="20%" stop-color="orange"/>
+    <stop offset="35%" stop-color="gold"/>
+    <stop offset="50%" stop-color="green"/>
+    <stop offset="65%" stop-color="cyan"/>
+    <stop offset="80%" stop-color="blue"/>
+    <stop offset="95%" stop-color="purple"/>
+  </linearGradient>
+  <linearGradient id="cat" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="0%" stop-color="magenta"/>
+    <stop offset="80%" stop-color="cyan"/>
+  </linearGradient>
+  <linearGradient id="tau" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="30%" stop-color="white" stop-opacity="0.8"/>
+    <stop offset="50%" stop-color="white" stop-opacity="0"/>
+    <stop offset="70%" stop-color="white" stop-opacity="0.8"/>
+  </linearGradient>
+</defs>
+<g transform="translate(0,100) scale(0.8)" style="font-family:sans-serif">
+<g transform="translate(170,0)">
+    <rect x="25" y="-50" width="160" height="100" fill="url(#cat)" stroke="none"/>
+    <rect x="125" y="-50" width="25" height="100" fill="white" stroke="none"/>
+    <rect x="150" y="-65" width="50" height="160" fill="url(#tau)" stroke="none"/>
+    <path fill="none" stroke="white" stroke-width="174" stroke-dasharray="5,10" d="M80,-40 L80,40"></path>
+    <path fill="none" stroke="white" stroke-width="100" stroke-dasharray="1,4" d="M24,0 L140,0"></path>
+    <text x="73" y="-55" text-anchor="middle">--- latent dim ---</text>
+    <text text-anchor="middle" transform="translate(130,0) rotate(90)">--- codebook ---</text>
+    <text x="175" y="-55" text-anchor="middle" font-size="1.2em" fill="black">τ</text>
+    <text x="168" y="66" text-anchor="middle" fill="black">softmax</text>
+</g>
+<g transform="translate(60,0)">
+    <path fill="none" stroke="url(#encoder)" stroke-width="5" d="M0,-100 L120,-50 L120,50 L0,100 Z"></path>
+    <text x="60" y="4" text-anchor="middle">Encoder</text>
+</g>
+<g transform="translate(363,0)">
+    <path stroke="#88f" stroke-width="16" d="M10,-50 L10,50"></path>
+    <text x="10" y="-55" text-anchor="middle">q</text>
+</g>
+<g transform="translate(395,0)">
+    <path fill="none" stroke="url(#decoder)" stroke-width="5" d="M0,-50 L120,-100 L120,100 L0,50 Z"></path>
+    <text x="60" y="4" text-anchor="middle">Decoder</text>
+</g>
+</g>    
+</svg>

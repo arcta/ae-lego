@@ -1,0 +1,8 @@
+datasets
+pandas
+Pillow
+tensorboard
+torch
+torchmetrics
+torchsummary
+torchvision

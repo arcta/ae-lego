@@ -1,0 +1,13 @@
+
+.vscode/
+
+.DS_Store
+
+.cache
+
+.ipynb_checkpoints
+*.nbconvert.ipynb
+
+data/
+output/
+runs/

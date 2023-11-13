@@ -1,0 +1,47 @@
+<svg width="900" height="220" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="flow" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0%" stop-color="white"/>
+    <stop offset="50%" stop-color="#44f"/>
+    <stop offset="100%" stop-color="white"/>
+  </linearGradient>
+  <linearGradient id="context" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="0%" stop-color="aquamarine" stop-opacity="0"/>
+    <stop offset="100%" stop-color="aquamarine" stop-opacity="1"/>
+  </linearGradient>
+  <linearGradient id="encoder" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0%" stop-color="#abc"/>
+    <stop offset="100%" stop-color="#88f"/>
+  </linearGradient>
+  <linearGradient id="decoder" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0%" stop-color="#88f"/>
+    <stop offset="100%" stop-color="#abc"/>
+  </linearGradient>
+</defs>
+<g transform="translate(45,100) scale(0.8)" style="font-family:sans-serif">    
+<g transform="translate(40,0)">
+    <rect x="0" y="-50" width="350" height="100" fill="url(#flow)" fill-opacity="0.25" stroke="none"/>
+    <path fill="none" stroke="url(#encoder)" stroke-width="5" d="M0,-100 L110,-50 L110,50 L0,100 Z"></path>
+    <text x="60" y="4" text-anchor="middle">Encoder</text>
+</g>
+<g transform="translate(50,0)">
+    <rect x="125" y="-60" width="20" height="140" fill="url(#context)" stroke="none"/>
+    <path stroke="teal" stroke-width="110" stroke-dasharray="2,2" d="M130,0 L140,0"></path>
+    <text text-anchor="middle" transform="translate(120,0) rotate(-90)">neck</text>
+    <text x="135" y="95" text-anchor="middle">context</text>
+</g>  
+<g transform="translate(210,0)">
+    <path stroke="#88f" stroke-width="16" d="M10,-50 L10,50"></path>
+    <text x="10" y="-55" text-anchor="middle">h</text>
+</g>
+<g transform="translate(280,0)">
+    <path fill="none" stroke="url(#decoder)" stroke-width="5" d="M10,-50 L120,-100 L120,100 L10,50 Z"></path>
+    <text x="60" y="4" text-anchor="middle">Decoder</text>
+</g>
+<g transform="translate(270,0)">
+    <rect x="-25" y="-60" width="20" height="140" fill="url(#context)" stroke="none"/>
+    <path stroke="teal" stroke-width="110" stroke-dasharray="2,2" d="M-20,0 L-10,0"></path>
+    <text text-anchor="middle" transform="translate(0,0) rotate(90)">condition</text>
+</g>
+</g>    
+</svg>
