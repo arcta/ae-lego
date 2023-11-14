@@ -36,7 +36,7 @@
     <path fill="none" stroke="white" stroke-width="100" stroke-dasharray="1,4" d="M24,0 L140,0"></path>
     <text x="73" y="-55" text-anchor="middle">--- latent dim ---</text>
     <text text-anchor="middle" transform="translate(130,0) rotate(90)">--- codebook ---</text>
-    <text x="175" y="-55" text-anchor="middle" font-size="1.2em" fill="black">τ</text>
+    <text x="175" y="-55" text-anchor="middle" font-size="1.2em" fill="black">&#964;</text>
     <text x="168" y="66" text-anchor="middle" fill="black">softmax</text>
 </g>
 <g transform="translate(60,0)">

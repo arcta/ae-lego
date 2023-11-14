@@ -95,7 +95,7 @@ The notebooks with full output for a set of configurations:
 * [`latent=18 categorical=16 encoder-semantic=10 decoder-semantic=10`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-16-16-10.html)
 * [`latent=8  categorical=10 encoder-semantic=10 decoder-semantic=10`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-8-10-10.html)
 * [`latent=4  categorical=8  encoder-semantic=0  decoder-semantic=10`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-4-8-d10.html)
-* [`latent=4  categorical=8  encoder-semantic=10 decoder-semantic=0`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-4-8-e10.html)
+
 
 ### Environment
 We used PyTorch 2.0 for experiments.
