@@ -64,7 +64,7 @@ class Neck(nn.Module):
         # compress to target latent space dim
         self.latent_projection = nn.Linear(LOCAL, hidden_dim)
         
-    def forward(self, x, context: Optional = None):
+    def forward(self, x, context: Optional[Tensor] = None):
         h = self.adapter(x[-1])
         if self.semantic_dim > 0 and not context is None:
             h = self.context_projection(torch.cat((h, context), 1))
@@ -105,7 +105,7 @@ class ZEncoder(nn.Module):
         self.mean = nn.Linear(LOCAL, latent_dim)
         self.logvar = nn.Linear(LOCAL, latent_dim)
         
-    def encode(self, x, context: Optional = None):
+    def encode(self, x, context: Optional[Tensor] = None):
         return self.neck(self.encoder(x), context)
 
     def projection(self, x):
@@ -116,7 +116,7 @@ class ZEncoder(nn.Module):
         eps = torch.randn_like(std)
         return mean + eps * std
     
-    def forward(self, x, context: Optional = None):
+    def forward(self, x, context: Optional[Tensor] = None):
         h = self.encode(x, context)
         mean, logvar = self.projection(h)
         z = self.reparameterize(mean, logvar)
@@ -139,7 +139,7 @@ class Condition(nn.Module):
         # adjust to the required output format
         self.output_projection = nn.Sequential(nn.Linear(input_dim, output_dim), nn.ReLU())
         
-    def forward(self, z, context: Optional = None):
+    def forward(self, z, context: Optional[Tensor] = None):
         if self.semantic_dim > 0 and not context is None:
             z = self.context_projection(torch.cat((z, context), 1))
         # return conditioned latent representation along with adjusted output for diagnostics
@@ -159,10 +159,10 @@ class ZDecoder(nn.Module):
         # make a conditional adapter to our encoder and decoder heads
         self.condition = Condition(latent_dim, LOCAL, semantic_dim)
     
-    def forward(self, z, context: Optional = None):
-        h, s = self.condition(z, context)
+    def forward(self, z, context: Optional[Tensor] = None):
+        h, c = self.condition(z, context)
         h = h.view(h.size(0), LOCAL, 1, 1)
-        return self.decoder(h), s
+        return self.decoder(h), c
     
     
 class VAE(nn.Module):
@@ -199,17 +199,17 @@ class VAE(nn.Module):
             context += torch.rand(*context.size()).to(DEVICE) * temperature * 0.25
         return context
             
-    def forward(self, x, context: Optional = None, temperature: Optional = None):
+    def forward(self, x, context: Optional[Tensor] = None, temperature: Optional[float] = None):
         if temperature is None:
             temperature = torch.exp(self.tau)
         # representation and dist-params
         z, mean, logvar = self.encoder(x, self.translate(self.encoder.semantic_dim, context, temperature))
         # reconstruction and its source conditioned representation
-        rec, zs = self.decoder(z, self.translate(self.decoder.semantic_dim, context, temperature))
-        return rec, z, mean, logvar, self.tau, zs
+        rec, zcontext = self.decoder(z, self.translate(self.decoder.semantic_dim, context, temperature))
+        return rec, z, mean, logvar, self.tau, zcontext
     
     @torch.no_grad()
-    def sample(self, num_samples, context: Optional = None, temperature: Optional = 1.):
+    def sample(self, num_samples, context: Optional[Tensor] = None, temperature: Optional[float] = 1.):
         if self.decoder.semantic_dim == 0:
             context = None
         if type(context) == int:
@@ -235,7 +235,7 @@ class GEncoder(nn.Module):
         self.encoder = encoder
         self.neck = Neck(latent_dim * categorical_dim, semantic_dim)
         
-    def encode(self, x, context: Optional = None):
+    def encode(self, x, context: Optional[Tensor] = None):
         return self.neck(self.encoder(x), context)
 
     def gumbel_sample(self, shape, eps=1e-10):
@@ -252,7 +252,7 @@ class GEncoder(nn.Module):
         h = torch.softmax(h / temperature, dim=-1)
         return h.view(-1, self.latent_dim * self.categorical_dim)
     
-    def forward(self, x, context: Optional = None, temperature: Optional = 1.):
+    def forward(self, x, context: Optional[Tensor] = None, temperature: Optional[float] = 1.):
         h = self.encode(x, context)
         h = h.view(h.size(0), self.latent_dim, self.categorical_dim)
         # posterior and prior
@@ -297,17 +297,17 @@ class DVAE(nn.Module):
             return context
         return RelaxedOneHotCategorical(temperature, probs=context).sample()
             
-    def forward(self, x, context: Optional = None, temperature: Optional = None):
+    def forward(self, x, context: Optional[Tensor] = None, temperature: Optional[float] = None):
         if temperature is None:
             temperature = torch.exp(self.tau)
         # representation: prior and posterior
         p, q = self.encoder(x, self.translate(self.encoder.semantic_dim, context, temperature), temperature)
         # reconstruction and its source conditioned representation
-        rec, ps = self.decoder(p, self.translate(self.decoder.semantic_dim, context, temperature))
-        return rec, p, q, self.tau, ps
+        rec, pcontext = self.decoder(p, self.translate(self.decoder.semantic_dim, context, temperature))
+        return rec, p, q, self.tau, pcontext
     
     @torch.no_grad()
-    def sample(self, num_samples, context: Optional = None, temperature: Optional = 1.):
+    def sample(self, num_samples, context: Optional[Tensor] = None, temperature: Optional[float] = 1.):
         if self.decoder.semantic_dim == 0:
             context = None
         if type(context) == int:
@@ -342,26 +342,26 @@ class TwinVAE(nn.Module):
         # all the outputs tagged
         self.keys = ['rec-VAE','z','mean','log-variance','rec-DVAE','p','q','tau','z-context','p-context']
         
-    def sample(self, num_samples, context: Optional = None, temperature: Optional = 1.,
-               categorical: Optional = False):
+    def sample(self, num_samples, context: Optional[Tensor] = None, temperature: Optional[float] = 1.,
+               categorical: Optional[bool] = False):
         if categorical:
             return self.dvae.sample(num_samples, context, temperature)
         return self.vae.sample(num_samples, context, temperature)
         
-    def forward(self, x, context: Optional = None, temperature: Optional = None):
+    def forward(self, x, context: Optional[Tensor] = None, temperature: Optional[float] = None):
         if temperature is None:
             temperature = torch.exp(self.tau)
         # vae reconstruction
         c = self.vae.translate(self.vae.encoder.semantic_dim, context, temperature)
         z, mean, logvar = self.vae.encoder(x, c)
         c = self.vae.translate(self.vae.decoder.semantic_dim, context, temperature)
-        zrec, zs = self.vae.decoder(z, c)
+        zrec, zcontext = self.vae.decoder(z, c)
         # dvae reconstruction
         c = self.dvae.translate(self.dvae.encoder.semantic_dim, context, temperature)
         p, q = self.dvae.encoder(x, c, temperature)
         c = self.dvae.translate(self.dvae.decoder.semantic_dim, context, temperature)
-        grec, ps = self.dvae.decoder(p, c)
-        return zrec, z, mean, logvar, grec, p, q, self.tau, zs, ps
+        grec, pcontext = self.dvae.decoder(p, c)
+        return zrec, z, mean, logvar, grec, p, q, self.tau, zcontext, pcontext
     
     
 class HydraVAE(nn.Module):
@@ -385,12 +385,12 @@ class HydraVAE(nn.Module):
                            encoder_semantic_dim, decoder_semantic_dim, tau)
             self.keys = ['rec-AE','rec-VAE','z','mean','log-variance','tau','z-context']
         
-    def sample(self, num_samples, context: Optional = None, temperature: Optional = 1.):
+    def sample(self, num_samples, context: Optional[Tensor] = None, temperature: Optional[float] = 1.):
         if self.categorical:
             return self.dvae.sample(num_samples, context, temperature)
         return self.vae.sample(num_samples, context, temperature)
 
-    def forward(self, x, context: Optional = None, temperature: Optional = None):
+    def forward(self, x, context: Optional[Tensor] = None, temperature: Optional[float] = None):
         if temperature is None:
             temperature = torch.exp(self.tau)
         rec = self.ae(x)
@@ -398,12 +398,12 @@ class HydraVAE(nn.Module):
             c = self.dvae.translate(self.dvae.encoder.semantic_dim, context, temperature)
             p, q = self.dvae.encoder(x, c, temperature)
             c = self.dvae.translate(self.dvae.decoder.semantic_dim, context, temperature)
-            grec, ps = self.dvae.decoder(p, c)
-            return rec, grec, p, q, self.tau, ps
+            grec, pcontext = self.dvae.decoder(p, c)
+            return rec, grec, p, q, self.tau, pcontext
         # vanilla vae
         c = self.vae.translate(self.vae.encoder.semantic_dim, context, temperature)
         z, mean, logvar = self.vae.encoder(x, c)
         c = self.vae.translate(self.vae.decoder.semantic_dim, context, temperature)
-        zrec, zs = self.vae.decoder(z, c)
-        return rec, zrec, z, mean, logvar, self.tau, zs
+        zrec, zcontext = self.vae.decoder(z, c)
+        return rec, zrec, z, mean, logvar, self.tau, zcontext
 
