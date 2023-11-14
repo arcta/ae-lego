@@ -3,7 +3,10 @@ Intention of this toy example is to get visual insights into dynamics of the hyb
 
 Training variational auto-encoders (VAEs) can be difficult, and knowing the data is important for choosing the optimal setup. Here we are looking for the signals which could help to find it. We introduce a few helper terms useful for the training state diagnostics.
 
-### [Blocks](notebooks/AE-LEGO.ipynb)
+<img align="left" src="notebooks/assets/training-history.png" /><br clear="all">
+
+
+### [Blocks:](notebooks/AE-LEGO.ipynb)
 This notebook defines a set of building blocks to play with.
 
 * [Dataset](notebooks/AE-LEGO.ipynb#data)
@@ -24,7 +27,7 @@ This notebook defines a set of building blocks to play with.
     * [Semantic align](notebooks/AE-LEGO.ipynb#align)
     * [Temperature](notebooks/AE-LEGO.ipynb#tau)
     
-### [Exploration setup](notebooks/AE-Experiments-Setup.ipynb)
+### [Exploration setup:](notebooks/AE-Experiments-Setup.ipynb)
 This notebook defines exploration utilities.
 
 * [Dataset](notebooks/AE-Experiments-Setup.ipynb#data)
@@ -39,7 +42,7 @@ This notebook defines exploration utilities.
     * [Hydra-VAE](notebooks/AE-Experiments-Setup.ipynb#hvae): [reconstruction only; low weight](notebooks/AE-Experiments-Setup.ipynb#hvae)
     * [Hydra-DVAE](notebooks/AE-Experiments-Setup.ipynb#hdvae): [reconstruction only; low weight](notebooks/AE-Experiments-Setup.ipynb#hdvae)
     
-### [Experiments](notebooks/AE-Experiments.ipynb)
+### [Experiments:](notebooks/AE-Experiments.ipynb)
 This notebook takes dive into training a diverse set of variational encoders.
 
 * [Fixed parameters experiments](notebooks/AE-Experiments.ipynb#fixed):
@@ -68,16 +71,31 @@ This notebook takes dive into training a diverse set of variational encoders.
     * 21. [Hydra-DVAE](notebooks/AE-Experiments.ipynb#21)
 * [Compare results](notebooks/AE-Experiments.ipynb#res)
 
-### [No-Context experiments](notebooks/AE-Experiments-Base.ipynb)
+### [No-Context experiments:](notebooks/AE-Experiments-Base.ipynb)
 This notebook contains the same experiments as above without semantic channel.
 
-### [Tensorboard logging](notebooks/AE-Experiments-Tensorboard.ipynb)
+### [Tensorboard logging:](notebooks/AE-Experiments-Tensorboard.ipynb)
 This notebook uses refined post-R&D loss-function and `tensorboard` logging.
 
+<!--img align="left" src="notebooks/assets/tensorboard.png" /><br clear="all"-->
+
 ### Output
+
+<img align="left" src="notebooks/assets/twin-vae.png" /><br clear="all">
+
+<img align="left" src="notebooks/assets/semantic.png" /><br clear="all">
+
+<img align="left" src="notebooks/assets/results-4-4-10.png" /><br clear="all">
+
 The notebooks with full output for a set of configurations:
-* 
- 
+
+* [`latent=3  categorical=10 encoder-semantic=0  decoder-semantic=0`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-3-10-0.html)
+* [`latent=3  categorical=10 encoder-semantic=4  decoder-semantic=4`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-3-10-4.html)
+* [`latent=4  categorical=4  encoder-semantic=10 decoder-semantic=10`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-4-4-10.html)
+* [`latent=18 categorical=16 encoder-semantic=10 decoder-semantic=10`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-16-16-10.html)
+* [`latent=8  categorical=10 encoder-semantic=10 decoder-semantic=10`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-8-10-10.html)
+* [`latent=4  categorical=8  encoder-semantic=0  decoder-semantic=10`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-4-8-d10.html)
+* [`latent=4  categorical=8  encoder-semantic=10 decoder-semantic=0`](https://arcta.me/projects/dustbin/ae-lego-output/AE-Experiments-4-8-e10.html)
 
 ### Environment
 We used PyTorch 2.0 for experiments.
